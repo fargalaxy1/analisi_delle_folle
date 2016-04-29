@@ -83,7 +83,7 @@ def build_arena(_xMax, _yMax):
                     sys.stdout.write("-")
                 else:
                     arena_shape[j + xmax * i] = " "
-                    arena_type[j + xmax * i] = 1
+                    arena_type[j + xmax * i] = 2
                     sys.stdout.write(" ")
             elif i == (ymax-1):
                 arena_shape[j + xmax * i] = "-"
@@ -121,6 +121,7 @@ def read_personeFile(c_file):
             p_y = persone_dict.split()[1]
             p_vel = persone_dict.split()[2]
             p_vel = int(p_vel)
+            p_target_exit = persone_dict.split()[3]
             p_shape = " "
             if p_vel ==1:
                 p_shape = "d"
@@ -131,7 +132,7 @@ def read_personeFile(c_file):
             else:
                 print("ATTENTION, one person has not velocity ")
             # print p_shape
-            persone_def[x-1] = p_x, p_y, p_vel, p_shape
+            persone_def[x-1] = p_x, p_y, p_vel, p_shape, p_target_exit
         return persone_def
 
 def place_persone_in_arena(_arena_x, _arena_y, _arena_type, _arena_shape, persone, xmax, ymax):

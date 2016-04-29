@@ -84,6 +84,8 @@ for timestep in range(1, tMax):
                 candidate = active_p
         active_p = candidate
         active_vel_p = int(persone[ active_p ][ 2 ])
+        active_target_exit_p = int(persone[ active_p ][ 4 ])
+        # print("target exit p %d \n" %active_target_exit_p)
 
         print ("active_p: %d active_vel_p %d \n" %(active_p, active_vel_p))
         print ("persone[%d] %s \n" %(active_p, persone[active_p]))
@@ -121,7 +123,7 @@ for timestep in range(1, tMax):
                                     for j in range(0, xMax):
                                         # print("distance loop (%d, %d) type %d\n" %(i,j, arena_type[ j + yMax * i ]))
                                         # if the arena cell (i,j) is an exit, then ..
-                                        if (arena_type[ j + xMax * i ]) == 1 and (i!=0 or j!=0):
+                                        if (arena_type[ j + xMax * i ]) == active_target_exit_p and (i!=0 or j!=0):
                                             print("USCITA SELEZIONATA %s (i,j) = (%d, %d) \n" %(arena_type[ j + xMax * i ], i, j))
                                             # compute the distance between the active cell (active_p_newx, active_p_newy) and the arena exit cell (i,j)
                                             distance_activep_newcell = math.sqrt(math.pow(i - active_p_newy, 2) + math.pow(j - active_p_newx,2))
@@ -152,9 +154,9 @@ for timestep in range(1, tMax):
                 persone[ active_p ][0] = candidate_x
                 persone[ active_p ][1] = candidate_y
                 person_shape = persone[active_p][3]
-
+                print("persone_shape %s \n" %person_shape)
                 # OCCHIO QUI
-                if arena_type[candidate_x + xMax * candidate_y] ==1:
+                if arena_type[candidate_x + xMax * candidate_y] == active_target_exit_p:
                     if candidate_x == 4:
                         counter_horiz += 1
                     elif candidate_x == 0:
