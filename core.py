@@ -53,13 +53,14 @@ for timestep in range(1, tMax):
         # print("init loop %d ev = %d \n" %(i, ev))
 
     percentage_of_evacuated = int(100 * ev/num_persone)
+    print("percentage_of_evacuated %d \n" %percentage_of_evacuated)
     if percentage_of_evacuated == 100:
         t100 = timestep
         print("t100 = %d \n" %t100)
-    elif percentage_of_evacuated == 90:
+    elif percentage_of_evacuated >= 90:
         t90 = timestep
         print("t90 = %d \n" % t90)
-    elif percentage_of_evacuated == 50:
+    elif percentage_of_evacuated >= 50:
         t50 = timestep
         print("t50 = %d \n" %t50)
 

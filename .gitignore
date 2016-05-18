@@ -1,0 +1,7 @@
+/.idea
+init_arena_shape.txt
+evolution.txt
+out_log
+persone.txt
+*.DS_Store
+*.pyc
