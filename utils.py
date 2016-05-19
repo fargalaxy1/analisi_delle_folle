@@ -1,4 +1,5 @@
 import sys
+import pickle
 
 def read_configFile(c_file):
     with open(c_file, "r") as ins:
@@ -7,8 +8,11 @@ def read_configFile(c_file):
         return content
 
 def read_arenaFile(a_file):
-    with open(a_file, "r") as ins:
-        content = [int(x.strip()) for x in ins]
+    with open(a_file) as list_1_file:
+        content = pickle.load(list_1_file)
+
+    # with open(a_file, "r") as ins:
+    #     content = [int(x.strip()) for x in ins]
         # print("x.strip %s \n"%x.strip())
         # print("x %s \n" % x)
     return content

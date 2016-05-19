@@ -1,4 +1,5 @@
 from Tkinter import *
+import pickle
 # TOOLS
 LINE, RECTANGLE = list(range(2))
 
@@ -106,9 +107,11 @@ tool = Tool(whiteboard)
 canvas.pack(fill='both', expand=True, padx=6, pady=6)
 
 def save_and_quit():
-    arena_file = open('arena.txt', 'w+')
-    for item in arena_type:
-        arena_file.write("%d\n" % int(item))
+    # arena_file = open('arena.txt', 'w+')
+    with open('arena.txt', 'wb') as arena_file:
+        pickle.dump(arena_type, arena_file)
+    # for item in arena_type:
+    #     arena_file.write("%d\n" % int(item))
     root.destroy()
 
 root.protocol( "WM_DELETE_WINDOW", save_and_quit)
