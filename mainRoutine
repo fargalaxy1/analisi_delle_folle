@@ -11,4 +11,4 @@ arena_type = read_arenaFile("arena.txt")
 # arena_type_def = list(arena_type)
 # merged = sum(arena_type_def, [])
 # merged = list(itertools.chain.from_iterable(arena_type))
-print arena_type
+print len(arena_type)

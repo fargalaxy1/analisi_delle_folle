@@ -107,8 +107,8 @@ canvas.pack(fill='both', expand=True, padx=6, pady=6)
 
 def save_and_quit():
     arena_file = open('arena.txt', 'w+')
-    arena_file.write(("%s \n" %(arena_type)))
-    # print("arena_ type %s"%arena_type)
+    for item in arena_type:
+        arena_file.write("%d\n" % int(item))
     root.destroy()
 
 root.protocol( "WM_DELETE_WINDOW", save_and_quit)

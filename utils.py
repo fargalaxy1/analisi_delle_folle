@@ -8,7 +8,7 @@ def read_configFile(c_file):
 
 def read_arenaFile(a_file):
     with open(a_file, "r") as ins:
-        content = [x.strip() for x in ins]
+        content = [int(x.strip()) for x in ins]
         # print("x.strip %s \n"%x.strip())
         # print("x %s \n" % x)
     return content

@@ -11,7 +11,7 @@ tMax = int(config_array[ 2 ])
 
 # build all arena lists
 arena_x, arena_y, arena_type, arena_shape = build_arena(xMax, yMax)
-
+print("arena_type %s \n" %arena_type)
 # write init arena shape to a file
 init_arena_only = open('init_arena_shape.txt', 'w+')
 first_line = "Original shape"
