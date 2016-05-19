@@ -6,53 +6,12 @@ def read_configFile(c_file):
         content = ins.read().splitlines()
         return content
 
-# def build_arena(_xMax, _yMax):
-#
-#     xmax = int(_xMax)
-#     ymax = int(_yMax)
-#     arena_x = [0 for x in range(xmax*ymax)]
-#     arena_y = [0 for x in range(xmax*ymax)]
-#     arena_type = [0 for x in range(xmax*ymax)]
-#     arena_shape = [0 for x in range(xmax*ymax)]
-#     arena_def = [ 0 for x in range(xmax*ymax) ]
-#     for i in range(xmax):
-#         for j in range(ymax):
-#             # print("build_arena (%d, %d)\n " %(i,j))
-#             arena_x[j + ymax * i] = i
-#             arena_y[j + ymax * i] = j
-#             arena_type[j + ymax * i] = 0
-#             arena_shape[j + ymax * i] = 0
-#             if (i == 0):
-#                 if j<10 or j>13:
-#                     arena_shape[j + ymax * i] = "-"
-#                     arena_type[j + ymax * i] = -1
-#                     sys.stdout.write("-")
-#                 else:
-#                     arena_shape[j + ymax * i] = " "
-#                     arena_type[j + ymax * i] = 1
-#                     sys.stdout.write(" ")
-#             elif i==(xmax-1):
-#                 arena_shape[j + ymax * i] = "-"
-#                 arena_type[j + ymax * i] = -1
-#                 sys.stdout.write("-")
-#             elif j==0:
-#                 if i<10 or i>13:
-#                     arena_shape[ j + ymax * i ] = "|"
-#                     arena_type[ j + ymax * i ] = -1
-#                     sys.stdout.write("|")
-#                 else:
-#                     arena_shape[j + ymax * i] = " "
-#                     arena_type[j + ymax * i] = 1
-#                     sys.stdout.write(" ")
-#             elif j==ymax-1:
-#                 arena_shape[j + ymax * i] = "|"
-#                 arena_type[j + ymax * i] = -1
-#                 sys.stdout.write("|")
-#             else:
-#                 arena_shape[j + ymax * i] = " "
-#                 sys.stdout.write(" ")
-#         print("\r")
-#     return arena_x, arena_y, arena_type, arena_shape
+def read_arenaFile(a_file):
+    with open(a_file, "r") as ins:
+        content = [x.strip() for x in ins]
+        # print("x.strip %s \n"%x.strip())
+        # print("x %s \n" % x)
+    return content
 
 def build_arena(_xMax, _yMax):
 
