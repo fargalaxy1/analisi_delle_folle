@@ -1,4 +1,6 @@
 from Tkinter import *
+import tkMessageBox
+
 import pickle
 # TOOLS
 LINE, RECTANGLE = list(range(2))
@@ -13,39 +15,62 @@ class Arena:
         self.lastx, self.lasty = None, None
         self.upperLeftx, self.upperLefty = None, None
         self.bottomRightx, self.bottomRighty = None, None
+        self.initLinex,self.initLiney = None, None
+        self.endLinex,self.endLiney = None, None
         self.arena_type = None
-        self.canvas.bind('<Button-1>', self.set_upperLeftCorner)
+        self.canvas.bind('<Button-1>', self.dealWithButtonInit)
         self.canvas.bind('<B1-Motion>', self.drawArena)
-        self.canvas.bind('<ButtonRelease-1>', self.set_bottomRightCorner)
+        self.canvas.bind('<ButtonRelease-1>', self.dealWithButtonEnd)
 
-    def drawArena(self, event):
-        # print('Arena().draw() : draw %d %d \n' % (event.x, event.y))
-        # print('Arena().draw() : draw %d %d \n' % (event.x, event.y))
-
-        if self._tool is None or self._obj is None:
-            return
-        x, y = self.lastx, self.lasty
-        # print('Arena(): draw %d %d \n' %(event.x, event.y))
-
-        if self._tool in (LINE, RECTANGLE):
-            self.canvas.coords(self._obj, (x, y, event.x, event.y))
-            # self.bottomRightx, self.bottomRighty = event.x, event.y
-
-    def set_upperLeftCorner(self, event):
+    def dealWithButtonInit(self, event):
         if self._tool is None:
             return
         x, y = event.x, event.y
 
         if self._tool == LINE:
-            root.quit()
-            # self._obj = self.canvas.create_line((x, y, x, y))
-            # print('Arena(): LINE update_xy %s \n' %(self._tool))
+            tkMessageBox.FunctionName("Errore", "Bisogna prima disegnare l'arena - premi R")
+            self.set_exits(event)
+
         elif self._tool == RECTANGLE:
-            self._obj = self.canvas.create_rectangle((x, y, x, y))
-            self.upperLeftx, self.upperLefty = x,y
-            # print('Arena(): set_upperLeftCorner - (event.x, event.y) = (%d, %d) \n' %(x,y))
+            self.set_upperLeftCorner(event)
 
         self.lastx, self.lasty = x, y
+
+    def set_exits(self, event):
+        x, y = event.x, event.y
+
+        self.initLinex, self.initLiney = event.x, event.y
+        self._obj = self.canvas.create_line((x, y, x, y))
+        self.canvas.itemconfig(self._obj, fill = "Red")
+
+        print('Arena(): set_exits %d %d \n' % (x, y))
+
+    def set_upperLeftCorner(self, event):
+        x, y = event.x, event.y
+        self.upperLeftx, self.upperLefty = x, y
+        self._obj = self.canvas.create_rectangle((x, y, x, y))
+        self.upperLeftx, self.upperLefty = x, y
+        print('Arena(): set_upperLeftCorner - (event.x, event.y) = (%d, %d) \n' %(x,y))
+
+    def drawArena(self, event):
+        print('Arena().draw() : draw %d %d \n' % (event.x, event.y))
+
+        if self._tool is None or self._obj is None:
+            return
+        x, y = self.lastx, self.lasty
+        print('Arena(): draw %d %d \n' %(event.x, event.y))
+
+        if self._tool in (LINE, RECTANGLE):
+            self.canvas.coords(self._obj, (x, y, event.x, event.y))
+
+    def dealWithButtonEnd(self, event):
+        if self._tool == LINE:
+            self.endLinex = event.x
+            self.endLiney = event.y
+            print("end line %d %d" %(self.endLinex, self.endLiney))
+        elif self._tool == RECTANGLE:
+            self.bottomRightx, self.bottomRighty = event.x, event.y
+            self.buildArenaLists(self.upperLeftx, self.upperLefty, self.bottomRightx, self.bottomRighty)
 
     def set_bottomRightCorner(self, event):
         self.bottomRightx, self.bottomRighty = event.x, event.y
@@ -66,7 +91,7 @@ class Arena:
             for j in range(0, ncols):
                 if(i == 0 or i == (nrows -1) or j == 0 or j == (ncols-1)):
                     arena_type[j + i*ncols] = -1
-        print("in ARena class, len(arena_type) %s \n" %len(arena_type))
+        print("in Arena class, len(arena_type) %s \n" %len(arena_type))
 
         print("arena_type %s \n" %arena_type)
 
@@ -93,11 +118,15 @@ class Tool:
         print("Tool().update_tool\n")
 
         lbl = event.widget
+        print("lbl %s \n" %lbl)
+
         if self._curr_tool:
-            self._curr_tool['relief'] = 'raised'
-        lbl['relief'] = 'sunken'
-        self._curr_tool = lbl
-        self.whiteboard.select_tool(lbl._tool)
+            lbl['relief'] = 'raised'
+            self._curr_tool = None
+        else:
+            lbl['relief'] = 'sunken'
+            self._curr_tool = lbl
+            self.whiteboard.select_tool(lbl._tool)
 
 root = Tk()
 
