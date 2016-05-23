@@ -10,11 +10,6 @@ def read_configFile(c_file):
 def read_arenaFile(a_file):
     with open(a_file) as list_1_file:
         content = pickle.load(list_1_file)
-
-    # with open(a_file, "r") as ins:
-    #     content = [int(x.strip()) for x in ins]
-        # print("x.strip %s \n"%x.strip())
-        # print("x %s \n" % x)
     return content
 
 def build_arena(_xMax, _yMax):
