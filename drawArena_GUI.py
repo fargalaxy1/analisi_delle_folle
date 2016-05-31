@@ -1,12 +1,11 @@
 from Tkinter import *
 import tkMessageBox
-
 import pickle
 # TOOLS
 LINE, RECTANGLE = list(range(2))
 arena_type = []
 
-DEBUG = False
+DEBUG = True
 
 class Arena:
     def __init__(self, canvas):
@@ -27,6 +26,7 @@ class Arena:
 
     def dealWithButtonInit(self, event):
         if self._tool is None:
+            print("self.tool is NONE \n")
             return
         x, y = event.x, event.y
         if DEBUG:
@@ -139,6 +139,8 @@ class Tool:
             # print("i = %d, text = %s, t = %s\n" %(i, text, t))
             lbl = Label(frame, text=text, width=2, relief='raised')
             if not t:
+                # if the line tool is the one that is being initialized - t = 0
+                # find another way
                 self._lbl_L = lbl
             else:
                 self._lbl_R = lbl
@@ -156,6 +158,7 @@ class Tool:
         lbl = event.widget
         if DEBUG:
             print("lbl tool %s \n" %lbl._tool)
+            print("_curr_tool %s \n" % self._curr_tool)
 
         if self._curr_tool:
             if DEBUG:
@@ -174,8 +177,12 @@ class Tool:
                         print("1.d: tool R again")
                     self._lbl_R['relief'] = 'raised'
                     self._activeR = False
+                    self._curr_tool = None
+                    self.whiteboard.select_tool(None)
                 else:
                     self._activeR = True
+                    self._curr_tool = lbl
+                    self.whiteboard.select_tool(lbl._tool)
             else:
                 if DEBUG:
                     print("1.e: tool LINE to be raised")
@@ -192,9 +199,13 @@ class Tool:
                     self._activeL = False
                 else:
                     self._activeL = True
+                    self._curr_tool = lbl
+                    self.whiteboard.select_tool(lbl._tool)
         else:
             if DEBUG:
                 print("2: no tool already active")
+                print("2.0: tool %s active \n" %lbl._tool)
+
             lbl['relief'] = 'sunken'
             self._curr_tool = lbl
             self.whiteboard.select_tool(lbl._tool)
