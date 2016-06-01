@@ -4,8 +4,8 @@ import pickle
 # TOOLS
 LINE, RECTANGLE = list(range(2))
 arena_type = []
-
-DEBUG = True
+xmax, ymax = 0,0
+DEBUG = False
 
 class Arena:
     def __init__(self, canvas):
@@ -20,6 +20,7 @@ class Arena:
         self.initLinex,self.initLiney = None, None
         self.endLinex,self.endLiney = None, None
         self.arena_type = None
+        self.nrows_a, self.ncols_a = 0, 0
         self.canvas.bind('<Button-1>', self.dealWithButtonInit)
         self.canvas.bind('<B1-Motion>', self.drawArena)
         self.canvas.bind('<ButtonRelease-1>', self.dealWithButtonEnd)
@@ -81,15 +82,16 @@ class Arena:
             self.canvas.coords(self._obj, (x, y, event.x, event.y))
 
     def dealWithButtonEnd(self, event):
+        # if DEBUG:
+        #     print("end line %d %d" % (self.endLinex, self.endLiney))
         if self._tool == LINE:
             self.endLinex = event.x
             self.endLiney = event.y
-            if DEBUG:
-                print("end line %d %d" %(self.endLinex, self.endLiney))
+            self.addExitToArena()
         elif self._tool == RECTANGLE:
             self.bottomRightx, self.bottomRighty = event.x, event.y
             self.buildArenaLists(self.upperLeftx, self.upperLefty, self.bottomRightx, self.bottomRighty)
-        self._tool = None
+            self._tool = None
 
     def set_bottomRightCorner(self, event):
         self.bottomRightx, self.bottomRighty = event.x, event.y
@@ -101,8 +103,12 @@ class Arena:
             print self.upperLeftx, self.upperLefty, self.bottomRightx, self.bottomRighty
         nrows = br_y - ul_y
         ncols = br_x - ul_x
+        global xmax
+        global  ymax
+        xmax = nrows
+        ymax = ncols
         if DEBUG:
-            print("nrows = %d, ncols = %d\n"%(nrows,ncols))
+            print("nrows = %d, ncols = %d\n"%(nrows, ncols))
         self.arena_type = [0 for xx in range(nrows*ncols)]
         global arena_type
         arena_type = [0 for xx in range(nrows*ncols)]
@@ -117,11 +123,76 @@ class Arena:
 
         if DEBUG:
             print("arena_type %s \n" %arena_type)
+        self.arena_type = arena_type
+        self.nrows_a = int(nrows)
+        self.ncols_a = int(ncols)
+        print("nrows %d ncols %d \n" %(self.nrows_a, self.ncols_a))
 
     def select_tool(self, tool):
         if DEBUG:
             print('Tool def', tool)
         self._tool = tool
+
+    def addExitToArena(self):
+        diffX = self.endLinex - self.initLinex
+        diffY = self.endLiney - self.initLiney
+        print("addExitToArena %d %d \n" %(diffX, diffY))
+        southExit, northExit = False, False
+        eastExit, westExit = False, False
+
+        if diffX > diffY:
+            print("horizonthal side %d \n" % (self.initLiney - self.upperLefty))
+
+            exit_0 = self.initLinex - self.upperLeftx
+            exit_1 = self.endLinex - self.upperLeftx
+
+            print("initX %d initY %d\n " %(self.initLinex, self.endLinex))
+            print("exit0 %d exit_1 %d\n " %(exit_0, exit_1))
+
+            if self.initLiney - self.upperLefty > (self.nrows_a/2):
+                print("south EXIT \n")
+                southExit = True
+                self.updateArenaList("S", exit_0, exit_1)
+
+            else:
+                print("north EXIT \n")
+                northExit = True
+                self.updateArenaList("N", exit_0, exit_1 )
+        else:
+            print("vertical side  %d \n" % (self.initLinex - self.upperLeftx))
+
+            exit_0 = self.initLiney - self.upperLefty
+            exit_1 = self.endLiney - self.upperLefty
+
+            if self.initLinex - self.upperLeftx > (self.ncols_a / 2):
+                print("East EXIT \n")
+                eastExit = True
+                self.updateArenaList("E", exit_0, exit_1)
+            else:
+                print("West EXIT \n")
+                westExit = True
+                self.updateArenaList("W", exit_0, exit_1)
+
+    def updateArenaList(self, position_flag, _exit_0, _exit_1):
+
+        if(position_flag == "N"):
+            print("sono a nord %d %d \n" %(_exit_0, _exit_1))
+            for j in range(_exit_0, _exit_1 + 1):
+                self.arena_type[j] = 1
+        elif(position_flag == "S"):
+            print("sono a sud %d %d \n" %(_exit_0, _exit_1))
+            for j in range(_exit_0, _exit_1 + 1):
+                self.arena_type[(self.nrows_a - 1) * self.ncols_a + j] = 1
+        elif(position_flag == "E"):
+            print("sono a est %d %d \n" %(_exit_0, _exit_1))
+            for i in range(_exit_0, _exit_1):
+                self.arena_type[(self.ncols_a ) * i + self.ncols_a -1] = 1
+                print("i %d arena %s index %d \n" %(i, self.arena_type[(self.ncols_a -1 ) * i + self.ncols_a], (self.ncols_a -1 ) * i + self.ncols_a))
+        elif(position_flag == "W"):
+            for i in range(_exit_0, _exit_1 + 1):
+                self.arena_type[(self.ncols_a) * i] = 1
+
+        # print("arena_type %s \n" %self.arena_type)
 
 class Tool:
     def __init__(self, whiteboard, parent=None):
@@ -197,6 +268,8 @@ class Tool:
                         print("1.g: tool L again")
                     self._lbl_L['relief'] = 'raised'
                     self._activeL = False
+                    self._curr_tool = None
+                    self.whiteboard.select_tool(None)
                 else:
                     self._activeL = True
                     self._curr_tool = lbl
@@ -230,6 +303,11 @@ def save_and_quit():
     # arena_file = open('arena.txt', 'w+')
     with open('arena.txt', 'wb') as arena_file:
         pickle.dump(arena_type, arena_file)
+    for i in range(0, xmax):
+        temp_variable = ' '
+        for j in range(0, ymax):
+            temp_variable += str(arena_type[ j + i*ymax])
+        print temp_variable
     root.destroy()
 
 root.protocol( "WM_DELETE_WINDOW", save_and_quit)
