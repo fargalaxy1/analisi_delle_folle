@@ -1,9 +1,6 @@
 /.idea
-init_arena_shape.txt
-evolution.txt
-evolution_old.txt
-arena.txt
+*.txt
+!configuration_file.txt
 out_log
-persone.txt
 *.DS_Store
 *.pyc

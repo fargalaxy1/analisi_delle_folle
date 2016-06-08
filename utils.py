@@ -1,16 +1,35 @@
 import sys
 import pickle
+import random
 
 def read_configFile(c_file):
     with open(c_file, "r") as ins:
-
         content = ins.read().splitlines()
         return content
+
+def read_arenaDimFile(c_file):
+    file = open(c_file, "r")
+    raw = file.read().splitlines()
+    X = raw[0].split()[0]
+    Y = raw[0].split()[1]
+    return int(X), int(Y)
 
 def read_arenaFile(a_file):
     with open(a_file) as list_1_file:
         content = pickle.load(list_1_file)
     return content
+
+def create_personeFile(p_file, _numPersone, xMax, yMax):
+
+    persone_file = open(p_file, 'w+')
+    for p in range(0, _numPersone):
+        # print_variable = []
+        xCoord_p = random.randint(1, xMax-2)
+        yCoord_p = random.randint(1, yMax-2)
+        vel_p = random.randint(1,3)
+        target_exit = random.randint(1,2)
+        # print_variable += xCoord_p, yCoord_p, vel_p
+        persone_file.write(("%d %d %d %d \n" %(xCoord_p, yCoord_p, vel_p, target_exit)))
 
 def build_arena(_xMax, _yMax):
 
@@ -93,7 +112,7 @@ def read_personeFile(c_file):
             persone_def[x-1] = p_x, p_y, p_vel, p_shape, p_target_exit
         return persone_def
 
-def place_persone_in_arena(_arena_x, _arena_y, _arena_type, _arena_shape, persone, xmax, ymax):
+def place_persone_in_arena(_arena_type, persone, xmax, ymax):
     n_p = len(persone)
     # print("place_persone_in_arena, n_p = %d \n" %n_p)
     for p in range(0,n_p):

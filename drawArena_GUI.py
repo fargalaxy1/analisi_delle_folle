@@ -5,6 +5,7 @@ import pickle
 LINE, RECTANGLE = list(range(2))
 arena_type = []
 xmax, ymax = 0,0
+g_exits_file = None
 DEBUG = False
 
 class Arena:
@@ -21,6 +22,7 @@ class Arena:
         self.endLinex,self.endLiney = None, None
         self.arena_type = None
         self.nrows_a, self.ncols_a = 0, 0
+        self.exits_file = None
         self.canvas.bind('<Button-1>', self.dealWithButtonInit)
         self.canvas.bind('<B1-Motion>', self.drawArena)
         self.canvas.bind('<ButtonRelease-1>', self.dealWithButtonEnd)
@@ -139,7 +141,9 @@ class Arena:
         print("addExitToArena %d %d \n" %(diffX, diffY))
         southExit, northExit = False, False
         eastExit, westExit = False, False
-
+        global g_exits_file
+        g_exits_file = open("exits.txt", "a")
+        _exits_file = g_exits_file
         if diffX > diffY:
             print("horizonthal side %d \n" % (self.initLiney - self.upperLefty))
 
@@ -153,11 +157,13 @@ class Arena:
                 print("south EXIT \n")
                 southExit = True
                 self.updateArenaList("S", exit_0, exit_1)
-
+                _exits_file.write(("%s %d %d \n" % ("S", exit_0, exit_1)))
             else:
                 print("north EXIT \n")
                 northExit = True
                 self.updateArenaList("N", exit_0, exit_1 )
+                _exits_file.write(("%s %d %d \n" % ("N", exit_0, exit_1)))
+
         else:
             print("vertical side  %d \n" % (self.initLinex - self.upperLeftx))
 
@@ -168,10 +174,12 @@ class Arena:
                 print("East EXIT \n")
                 eastExit = True
                 self.updateArenaList("E", exit_0, exit_1)
+                _exits_file.write(("%s %d %d \n" % ("E", exit_0, exit_1)))
             else:
                 print("West EXIT \n")
                 westExit = True
                 self.updateArenaList("W", exit_0, exit_1)
+                _exits_file.write(("%s %d %d \n" % ("W", exit_0, exit_1)))
 
     def updateArenaList(self, position_flag, _exit_0, _exit_1):
 
@@ -299,15 +307,16 @@ whiteboard = Arena(canvas)
 tool = Tool(whiteboard)
 canvas.pack(fill='both', expand=True, padx=6, pady=6)
 
+g_exits_file = open("exits.txt", "w")
+
 def save_and_quit():
     # arena_file = open('arena.txt', 'w+')
     with open('arena.txt', 'wb') as arena_file:
         pickle.dump(arena_type, arena_file)
-    for i in range(0, xmax):
-        temp_variable = ' '
-        for j in range(0, ymax):
-            temp_variable += str(arena_type[ j + i*ymax])
-        print temp_variable
+    arena_dim = open('arena_dim.txt', 'w+')
+    arena_dim.write(("%d %d \n" %(xmax, ymax)))
+    # g_exits_file.flush()
+    # g_exits_file.close()
     root.destroy()
 
 root.protocol( "WM_DELETE_WINDOW", save_and_quit)
