@@ -226,7 +226,6 @@ for timestep in range(1, tMax):
             print("ENDDDD --- EV >= num_persone %d %d \n" %(ev, num_persone))
             print("timestep %d \n" %(timestep))
         # first_line = "Timestep: " + str(timestep)
-        # print_arena_shape_to_file(xMax, yMax, arena_shape, file_evolution, first_line)
         break
     elif ev < num_persone:
         if DEBUG:

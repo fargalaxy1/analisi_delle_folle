@@ -1,4 +1,5 @@
 /.idea
+/scratch
 *.txt
 !configuration_file.txt
 out_log

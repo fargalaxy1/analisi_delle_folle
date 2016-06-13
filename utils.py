@@ -24,8 +24,8 @@ def create_personeFile(p_file, _numPersone, xMax, yMax):
     persone_file = open(p_file, 'w+')
     for p in range(0, _numPersone):
         # print_variable = []
-        xCoord_p = random.randint(1, xMax-2)
-        yCoord_p = random.randint(1, yMax-2)
+        xCoord_p = random.randint(1, yMax-2)
+        yCoord_p = random.randint(1, xMax-2)
         vel_p = random.randint(1,3)
         target_exit = random.randint(1,2)
         # print_variable += xCoord_p, yCoord_p, vel_p
@@ -114,19 +114,26 @@ def read_personeFile(c_file):
 
 def place_persone_in_arena(_arena_type, persone, xmax, ymax):
     n_p = len(persone)
-    # print("place_persone_in_arena, n_p = %d \n" %n_p)
+    print("place_persone_in_arena, n_p = %d \n" %n_p)
     for p in range(0,n_p):
         i = int(persone[p][1])
         j = int(persone[p][0])
-        vel = int(persone[p][2])
-        # print("person p = %d %s \n"%(p, persone[p]))
-        if(vel == 1):
-            _arena_shape[j + xmax * i] = "d"
-        elif(vel == 2):
-            _arena_shape[j + xmax * i] = "f"
-        elif(vel == 3):
-            _arena_shape[j + xmax * i] = "m"
-        _arena_type[j + xmax*i] = -1
-    return _arena_type, _arena_shape
+        _arena_type[j + ymax*i] = -2
+    return _arena_type
 
+def read_exitsFile(e_file):
+    with open(e_file, "r") as f:
+        raw_exits = f.read().splitlines()
+        n_lines_in_file = len(raw_exits)
+        exits_a = [0 for x in range(n_lines_in_file)]
+        print n_lines_in_file
+        for l in range(0, n_lines_in_file):
+            exits_dict = raw_exits[l]
+            x_0 = exits_dict.split()[0]
+            y_0 = exits_dict.split()[1]
+            x_1 = exits_dict.split()[2]
+            y_1 = exits_dict.split()[3]
+            print("loop exits_dict %s %s %s %s\n" %(x_0, y_0, x_1, y_1))
+            exits_a[l] = x_0, y_0, x_1, y_1
 
+        return exits_a

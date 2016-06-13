@@ -147,39 +147,45 @@ class Arena:
         if diffX > diffY:
             print("horizonthal side %d \n" % (self.initLiney - self.upperLefty))
 
-            exit_0 = self.initLinex - self.upperLeftx
-            exit_1 = self.endLinex - self.upperLeftx
+            exit_x_0 = self.initLinex - self.upperLeftx
+            exit_x_1 = self.endLinex - self.upperLeftx
 
             print("initX %d initY %d\n " %(self.initLinex, self.endLinex))
-            print("exit0 %d exit_1 %d\n " %(exit_0, exit_1))
+            print("exit0 %d exit_1 %d\n " %(exit_x_0, exit_x_1))
 
             if self.initLiney - self.upperLefty > (self.nrows_a/2):
                 print("south EXIT \n")
                 southExit = True
-                self.updateArenaList("S", exit_0, exit_1)
-                _exits_file.write(("%s %d %d \n" % ("S", exit_0, exit_1)))
+                y_all = self.nrows_a
+                self.updateArenaList("S", exit_x_0, exit_x_1)
+                # _exits_file.write(("%s %d %d \n" % ("S", exit_0, exit_1)))
+                _exits_file.write(("%d %d %d %d \n" % (exit_x_0, y_all, exit_x_1, y_all)))
             else:
                 print("north EXIT \n")
                 northExit = True
-                self.updateArenaList("N", exit_0, exit_1 )
-                _exits_file.write(("%s %d %d \n" % ("N", exit_0, exit_1)))
-
+                y_all = 0
+                self.updateArenaList("N", exit_x_0, exit_x_1 )
+                #_exits_file.write(("%s %d %d \n" % ("N", exit_x_0, exit_x_1)))
+                _exits_file.write(("%d %d %d %d\n" % (exit_x_0, y_all, exit_x_1, y_all)))
         else:
             print("vertical side  %d \n" % (self.initLinex - self.upperLeftx))
 
-            exit_0 = self.initLiney - self.upperLefty
-            exit_1 = self.endLiney - self.upperLefty
+            exit_y_0 = self.initLiney - self.upperLefty
+            exit_y_1 = self.endLiney - self.upperLefty
 
             if self.initLinex - self.upperLeftx > (self.ncols_a / 2):
                 print("East EXIT \n")
                 eastExit = True
-                self.updateArenaList("E", exit_0, exit_1)
-                _exits_file.write(("%s %d %d \n" % ("E", exit_0, exit_1)))
+                x_all = self.ncols_a
+                self.updateArenaList("E", exit_y_0, exit_y_1)
+                _exits_file.write(("%d %d %d %d \n" % (x_all, exit_y_0, x_all, exit_y_1)))
             else:
                 print("West EXIT \n")
                 westExit = True
-                self.updateArenaList("W", exit_0, exit_1)
-                _exits_file.write(("%s %d %d \n" % ("W", exit_0, exit_1)))
+                x_all = 0
+                self.updateArenaList("W", exit_y_0, exit_y_1)
+                # _exits_file.write(("%s %d %d \n" % ("W", exit_0, exit_1)))
+                _exits_file.write(("%d %d %d %d \n" % (x_all, exit_y_0, x_all, exit_y_1)))
 
     def updateArenaList(self, position_flag, _exit_0, _exit_1):
 
