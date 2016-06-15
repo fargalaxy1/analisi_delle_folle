@@ -23,6 +23,7 @@ class Arena:
         self.arena_type = None
         self.nrows_a, self.ncols_a = 0, 0
         self.exits_file = None
+        self.exit_target_number = 1
         self.canvas.bind('<Button-1>', self.dealWithButtonInit)
         self.canvas.bind('<B1-Motion>', self.drawArena)
         self.canvas.bind('<ButtonRelease-1>', self.dealWithButtonEnd)
@@ -188,24 +189,30 @@ class Arena:
                 _exits_file.write(("%d %d %d %d \n" % (x_all, exit_y_0, x_all, exit_y_1)))
 
     def updateArenaList(self, position_flag, _exit_0, _exit_1):
-
         if(position_flag == "N"):
             print("sono a nord %d %d \n" %(_exit_0, _exit_1))
             for j in range(_exit_0, _exit_1 + 1):
-                self.arena_type[j] = 1
+                self.arena_type[j] = self.exit_target_number
+            print(" exit_target_num %d \n" %self.exit_target_number)
+            self.exit_target_number +=1
         elif(position_flag == "S"):
             print("sono a sud %d %d \n" %(_exit_0, _exit_1))
             for j in range(_exit_0, _exit_1 + 1):
-                self.arena_type[(self.nrows_a - 1) * self.ncols_a + j] = 1
+                self.arena_type[(self.nrows_a - 1) * self.ncols_a + j] = self.exit_target_number
+            print(" exit_target_num %d \n" %self.exit_target_number)
+            self.exit_target_number +=1
         elif(position_flag == "E"):
             print("sono a est %d %d \n" %(_exit_0, _exit_1))
             for i in range(_exit_0, _exit_1):
-                self.arena_type[(self.ncols_a ) * i + self.ncols_a -1] = 1
+                self.arena_type[(self.ncols_a ) * i + self.ncols_a -1] = self.exit_target_number
                 print("i %d arena %s index %d \n" %(i, self.arena_type[(self.ncols_a -1 ) * i + self.ncols_a], (self.ncols_a -1 ) * i + self.ncols_a))
+            print(" exit_target_num %d \n" %self.exit_target_number)
+            self.exit_target_number += 1
         elif(position_flag == "W"):
             for i in range(_exit_0, _exit_1 + 1):
-                self.arena_type[(self.ncols_a) * i] = 1
-
+                self.arena_type[(self.ncols_a) * i] = self.exit_target_number
+            print(" exit_target_num %d \n" %self.exit_target_number)
+            self.exit_target_number += 1
         # print("arena_type %s \n" %self.arena_type)
 
 class Tool:

@@ -3,7 +3,7 @@ import math
 from utils import read_configFile, build_arena, read_personeFile, place_persone_in_arena, read_arenaFile
 from my_tools import print_arena_shape_to_stdout, print_arena_shape_to_file
 
-DEBUG = False
+DEBUG = True
 
 # read config file
 config_array = read_configFile("configuration_file.txt")
@@ -231,7 +231,7 @@ for timestep in range(1, tMax):
         if DEBUG:
             print("GO ON --- EV >= num_persone %d %d \n" %(ev, num_persone))
         first_line = "Timestep: " + str(timestep)
-        print_arena_shape_to_file(xMax, yMax, arena_shape, file_evolution, first_line)
+
         continue
 
 if DEBUG:
