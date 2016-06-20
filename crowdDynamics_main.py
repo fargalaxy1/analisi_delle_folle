@@ -186,7 +186,7 @@ for timestep in range(1, tMax):
                                             if DEBUG:
                                                 print(
                                                 "The distance from this exit is: %f \n" % distance_activep_newcell)
-                                            # if the distance between the exit and the test cell is smaller then the previous positive distance
+                                            # if the distance between exit and test cell is smaller then the previous distance
                                             # then set the active test cell has the candidate cell to move the persona
                                             if float(distance_activep_newcell) < float(min_distance):
                                                 min_distance = distance_activep_newcell
@@ -248,7 +248,7 @@ for timestep in range(1, tMax):
                         print("NOT AN EXIT: %s \n" %arena_type[candidate_x + xmax * candidate_y] )
                         print("\n")
                         print("\n")
-                    #  if the new cell is not an exit, then the cell is now occupied by the active_p and thus become an obstacle for the others
+                    #  if the new cell is not exit, then become occupied by the active_-> obstacle for the others
                     arena_type[ candidate_x + xmax * candidate_y] = -1
 
             mosse +=1
