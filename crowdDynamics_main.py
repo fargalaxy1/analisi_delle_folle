@@ -159,8 +159,8 @@ for timestep in range(1, tMax):
                         print ("active_dy: %d ymax %d \n" % (active_dy, ymax))
 
                     # if the new position (x+dx, y+dy) is inside the arena then
-                    if active_dx >= 0 and active_dx < ymax:
-                        if active_dy >= 0 and active_dy < xmax:
+                    if active_dx >= 0 and active_dx < xmax:
+                        if active_dy >= 0 and active_dy < ymax:
                             active_p_newx = active_dx
                             active_p_newy = active_dy
                             if DEBUG:
@@ -172,17 +172,17 @@ for timestep in range(1, tMax):
                                     print("I'm sitting on a free cell, type %d\n" % arena_type[
                                         active_p_newx + xmax * active_p_newy])
                                 # loop on each cell of the arena to detect the closest exit from the active cell
-                                for i in range(0, ymax):
-                                    for j in range(0, xmax):
+                                for i in range(0, xmax):
+                                    for j in range(0, ymax):
                                         # print("distance loop (%d, %d) type %d\n" %(i,j, arena_type[ j + ymax * i ]))
                                         # if the arena cell (i,j) is an exit, then ..
-                                        if (arena_type[j + xmax * i]) == active_target_exit_p and (i != 0 or j != 0):
+                                        if (arena_type[i + xmax * j]) == active_target_exit_p and (i != 0 or j != 0):
                                             if DEBUG:
                                                 print("USCITA SELEZIONATA %s (i,j) = (%d, %d) \n" % (
-                                                arena_type[j + xmax * i], i, j))
+                                                arena_type[i + xmax * j], i, j))
                                             # compute the distance between the active cell (active_p_newx, active_p_newy) and the arena exit cell (i,j)
                                             distance_activep_newcell = math.sqrt(
-                                                math.pow(i - active_p_newy, 2) + math.pow(j - active_p_newx, 2))
+                                                math.pow(j - active_p_newy, 2) + math.pow(i - active_p_newx, 2))
                                             if DEBUG:
                                                 print(
                                                 "The distance from this exit is: %f \n" % distance_activep_newcell)
@@ -279,9 +279,12 @@ for timestep in range(1, tMax):
         if DEBUG:
             print("CONTINUE the while loop until all people has been moved \n")
             print("CONTINUE: ev = %d, num_persone = %d \n" %(ev, num_persone))
-        draw_arena(persone, exits, xmax, ymax)
+        persone = draw_arena(persone, exits, xmax, ymax)
+        # print persone
         continue
 
+for xy in range(num_persone):
+    print("Exit times %d %d \n"%(xy, exit_time[xy]))
 
 if DEBUG:
     print("sono appena uscita dal loop temporale \n")

@@ -6,7 +6,7 @@ LINE, RECTANGLE = list(range(2))
 arena_type = []
 xmax, ymax = 0,0
 g_exits_file = None
-DEBUG = False
+DEBUG = True
 
 class Arena:
     def __init__(self, canvas):
@@ -34,7 +34,7 @@ class Arena:
             return
         x, y = event.x, event.y
         if DEBUG:
-            print('dealWithButtonInit \n')
+            print('dealWithButtonInit x=%d, y=%d \n'%(x,y))
 
         if self._tool == LINE:
             if DEBUG:
@@ -108,19 +108,20 @@ class Arena:
         ncols = br_x - ul_x
         global xmax
         global  ymax
-        xmax = nrows
-        ymax = ncols
+        xmax = ncols
+        ymax = nrows
         if DEBUG:
             print("nrows = %d, ncols = %d\n"%(nrows, ncols))
-        self.arena_type = [0 for xx in range(nrows*ncols)]
+        # self.arena_type = [0 for xx in range(nrows*ncols)]
         global arena_type
-        arena_type = [0 for xx in range(nrows*ncols)]
-        arena_type = self.arena_type
+        arena_type = [0 for gg in range(nrows*ncols+1)]
+        self.arena_type = arena_type
 
-        for i in range(0, nrows):
-            for j in range(0, ncols):
-                if(i == 0 or i == (nrows -1) or j == 0 or j == (ncols-1)):
-                    arena_type[j + i*ncols] = -1
+        for i in range(0, ncols):
+            for j in range(0, nrows):
+                if(i == 0 or i == (ncols -1) or j == 0 or j == (nrows-1)):
+                    print('buildArenaLists/arena_type %d %d --- %d %d \n'%(i,j, nrows, ncols))
+                    arena_type[i + j*ncols] = -1
         if DEBUG:
             print("in Arena class, len(arena_type) %s \n" %len(arena_type))
 
@@ -191,26 +192,26 @@ class Arena:
     def updateArenaList(self, position_flag, _exit_0, _exit_1):
         if(position_flag == "N"):
             print("sono a nord %d %d \n" %(_exit_0, _exit_1))
-            for j in range(_exit_0, _exit_1 + 1):
-                self.arena_type[j] = self.exit_target_number
+            for i in range(_exit_0, _exit_1 + 1):
+                self.arena_type[i] = self.exit_target_number
             print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number +=1
         elif(position_flag == "S"):
             print("sono a sud %d %d \n" %(_exit_0, _exit_1))
-            for j in range(_exit_0, _exit_1 + 1):
-                self.arena_type[(self.nrows_a - 1) * self.ncols_a + j] = self.exit_target_number
+            for i in range(_exit_0, _exit_1 + 1):
+                self.arena_type[(self.nrows_a - 1) * self.ncols_a + i] = self.exit_target_number
             print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number +=1
         elif(position_flag == "E"):
             print("sono a est %d %d \n" %(_exit_0, _exit_1))
-            for i in range(_exit_0, _exit_1):
-                self.arena_type[(self.ncols_a ) * i + self.ncols_a -1] = self.exit_target_number
-                print("i %d arena %s index %d \n" %(i, self.arena_type[(self.ncols_a -1 ) * i + self.ncols_a], (self.ncols_a -1 ) * i + self.ncols_a))
+            for j in range(_exit_0, _exit_1):
+                self.arena_type[(self.ncols_a ) * j + self.ncols_a -1] = self.exit_target_number
+                print("j %d arena %s index %d \n" %(j, self.arena_type[(self.ncols_a -1 ) * j + self.ncols_a], (self.ncols_a -1 ) * j + self.ncols_a))
             print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number += 1
         elif(position_flag == "W"):
-            for i in range(_exit_0, _exit_1 + 1):
-                self.arena_type[(self.ncols_a) * i] = self.exit_target_number
+            for j in range(_exit_0, _exit_1 + 1):
+                self.arena_type[(self.ncols_a) * j] = self.exit_target_number
             print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number += 1
         # print("arena_type %s \n" %self.arena_type)

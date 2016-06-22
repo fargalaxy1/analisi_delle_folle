@@ -24,73 +24,18 @@ def create_personeFile(p_file, _numPersone, _num_exits, xMax, yMax):
     persone_file = open(p_file, 'w+')
     for p in range(0, _numPersone):
         # print_variable = []
-        xCoord_p = random.randint(1, yMax-2)
-        yCoord_p = random.randint(1, xMax-2)
+        xCoord_p = random.randint(1, xMax-2)
+        yCoord_p = random.randint(1, yMax-2)
         vel_p = random.randint(1,3)
         target_exit = random.randint(1,_num_exits)
         isOut = 0
         # print_variable += xCoord_p, yCoord_p, vel_p
         persone_file.write(("%d %d %d %d %d\n" %(xCoord_p, yCoord_p, vel_p, target_exit, isOut)))
 
-def build_arena(_xMax, _yMax):
-
-    # xmax numero massimo di colonne
-    # ymax numero massimo di righe
-    xmax = int(_xMax)
-    ymax = int(_yMax)
-    arena_x = [0 for xx in range(xmax*ymax)]
-    arena_y = [0 for xx in range(xmax*ymax)]
-    arena_type = [0 for xx in range(xmax*ymax)]
-    arena_shape = [0 for xx in range(xmax*ymax)]
-    # print("xmax = %d , ymax = %d \n"%(xmax,ymax))
-
-    for i in range(0, ymax):
-        for j in range(0, xmax):
-            # print("--------------\n")
-            # print("build_arena (%d, %d)\n " %(i,j))
-            # print("j + ymax * i = %d\n " %(j + xmax * i))
-            # arena_x[j + xmax * i] = j
-            arena_y[j + xmax * i] = i
-            arena_type[j + xmax * i] = 0
-            arena_shape[j + xmax * i] = 0
-
-            if (i == 0):
-                if j<4 or j>4:
-                    arena_shape[j + xmax * i] = "-"
-                    arena_type[j + xmax * i] = -1
-                    sys.stdout.write("-")
-                else:
-                    arena_shape[j + xmax * i] = " "
-                    arena_type[j + xmax * i] = 2
-                    sys.stdout.write(" ")
-            elif i == (ymax-1):
-                arena_shape[j + xmax * i] = "-"
-                arena_type[j + xmax * i] = -1
-                sys.stdout.write("-")
-            elif j == 0:
-                if i<4 or i>4:
-                    arena_shape[ j + xmax * i ] = "|"
-                    arena_type[ j + xmax * i ] = -1
-                    sys.stdout.write("|")
-                else:
-                    arena_shape[j + xmax * i] = " "
-                    arena_type[j + xmax * i] = 1
-                    sys.stdout.write(" ")
-            elif j==xmax-1:
-                arena_shape[j + xmax * i] = "|"
-                arena_type[j + xmax * i] = -1
-                sys.stdout.write("|")
-            else:
-                arena_shape[j + xmax * i] = " "
-                sys.stdout.write(" ")
-        print("\r")
-    return arena_x, arena_y, arena_type, arena_shape
-
 def read_personeFile(c_file):
     with open(c_file, "r") as f:
         raw_persone = f.read().splitlines()
         n_lines_in_file = len(raw_persone)
-        persone_dict = {}
         persone_def = [0 for x in range(n_lines_in_file)]
         print("read_personeFile %d \n" %len(persone_def))
         print n_lines_in_file
@@ -109,9 +54,9 @@ def place_persone_in_arena(_arena_type, persone, xmax, ymax):
     n_p = len(persone)
     print("place_persone_in_arena, n_p = %d \n" %n_p)
     for p in range(0,n_p):
-        i = int(persone[p][1])
-        j = int(persone[p][0])
-        _arena_type[j + ymax*i] = -1
+        i = int(persone[p][0])
+        j = int(persone[p][1])
+        _arena_type[i + xmax*j] = -1
     return _arena_type
 
 def read_exitsFile(e_file):
