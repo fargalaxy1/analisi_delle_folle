@@ -316,7 +316,7 @@ class Tool:
 
 root = Tk()
 
-canvas = Canvas(highlightbackground='black')
+canvas = Canvas(highlightbackground='black', height=500, width=700)
 whiteboard = Arena(canvas)
 tool = Tool(whiteboard)
 canvas.pack(fill='both', expand=True, padx=6, pady=6)

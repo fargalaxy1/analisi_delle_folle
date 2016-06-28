@@ -48,7 +48,10 @@ counter_horiz = 0
 counter_vert = 0
 
 # init evolution
-for timestep in range(1, tMax):
+isallpeople_out = False
+timestep = 0
+
+while True:
 
     if DEBUG:
         print("\n")
@@ -280,6 +283,7 @@ for timestep in range(1, tMax):
             print("CONTINUE the while loop until all people has been moved \n")
             print("CONTINUE: ev = %d, num_persone = %d \n" %(ev, num_persone))
         persone = draw_arena(persone, exits, xmax, ymax)
+        timestep += timestep
         # print persone
         continue
 
