@@ -1,16 +1,15 @@
-from utils import read_configFile, read_arenaFile, read_arenaDimFile, create_personeFile, read_personeFile, place_persone_in_arena, read_exitsFile, add_target_exits_number
-from tk_utils import draw_arena_init, draw_arena
+from utils import read_inputPersone_File, read_arenaFile, read_arenaDimFile, create_personeFile, read_personeFile, \
+    place_persone_in_arena, read_exitsFile, empty_output_directory
+from tk_utils import draw_arena_init, draw_arena, initConfig_window
 import math
 
 DEBUG = False
 
-# read config file
-config_array = read_configFile("configuration_file.txt")
-num_persone = int(config_array[ 0 ])
-tMax = int(config_array[ 1 ])
-if DEBUG:
-    print("read config file %d %d \n" %(num_persone,tMax))
+empty_output_directory()
 
+initConfig_window()
+inputValues_persone = read_inputPersone_File("input_values.txt")
+num_persone = int(inputValues_persone[0])
 # here I replace arena_type[] coming from the old manual method with the GUI one
 arena_type = read_arenaFile("arena.txt")
 xmax, ymax = read_arenaDimFile("arena_dim.txt")
@@ -25,16 +24,16 @@ if DEBUG:
     print("xmax = %d, ymax = %d \n" %(xmax,ymax))
 
 # create and read persone file
-create_personeFile("persone.txt", num_persone, num_exits, xmax, ymax)
+create_personeFile("persone.txt", inputValues_persone, num_exits, xmax, ymax)
 persone = read_personeFile("persone.txt")
 
-if DEBUG:
-    print("persone %s \n" %persone)
+# if DEBUG:
+#     print("persone %s \n" %persone)
 
 #place persone in arena
 arena_type = place_persone_in_arena(arena_type, persone, xmax, ymax)
-if DEBUG:
-    print arena_type
+# if DEBUG:
+#     print arena_type
 
 # draw initial arena simulation
 draw_arena_init(persone, exits, xmax, ymax)
@@ -113,15 +112,20 @@ while True:
         # here we choose the active persona to be processed in the following
         for active_p in range(0, num_persone):
             vel_p = int(persone[active_p][2])
+
             # print("processed[%d]= %d, vel_p=%d, evacuated[%d] = %d \n" %(active_p, processed[active_p], vel_p, active_p, evacuated[active_p]))
             if DEBUG:
                 print("choose the active persona \n")
                 print("active_p %d \n" %active_p)
+                print("vel_p %d \n" % vel_p)
+
             if (processed[active_p] == 0 and vel_p > vel and evacuated[active_p] == 0):
                 vel = vel_p
                 candidate = active_p
-                if DEBUG:
-                    print("active_p chosen %d \n" %candidate)
+        # if DEBUG:
+        #     print("active_p chosen %d \n" % candidate)
+        print("active_p chosen %d \n" % candidate)
+
         active_p = candidate
         active_vel_p = int(persone[active_p][2])
         active_target_exit_p = int(persone[active_p][3])
@@ -180,9 +184,9 @@ while True:
                                         # print("distance loop (%d, %d) type %d\n" %(i,j, arena_type[ j + ymax * i ]))
                                         # if the arena cell (i,j) is an exit, then ..
                                         if (arena_type[i + xmax * j]) == active_target_exit_p and (i != 0 or j != 0):
-                                            if DEBUG:
-                                                print("USCITA SELEZIONATA %s (i,j) = (%d, %d) \n" % (
-                                                arena_type[i + xmax * j], i, j))
+                                            # if DEBUG:
+                                            #     print("USCITA SELEZIONATA %s (i,j) = (%d, %d) \n" % (
+                                            #     arena_type[i + xmax * j], i, j))
                                             # compute the distance between the active cell (active_p_newx, active_p_newy) and the arena exit cell (i,j)
                                             distance_activep_newcell = math.sqrt(
                                                 math.pow(j - active_p_newy, 2) + math.pow(i - active_p_newx, 2))
@@ -287,8 +291,9 @@ while True:
         # print persone
         continue
 
-for xy in range(num_persone):
-    print("Exit times %d %d \n"%(xy, exit_time[xy]))
+if DEBUG:
+    for xy in range(num_persone):
+        print("Exit times %d %d \n"%(xy, exit_time[xy]))
 
 if DEBUG:
     print("sono appena uscita dal loop temporale \n")

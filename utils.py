@@ -2,7 +2,20 @@ import sys
 import pickle
 import random
 
-def read_configFile(c_file):
+def empty_output_directory():
+    import os, shutil
+    folder = '/Users/marta/PycharmProjects/analisi_delle_folle/output'
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception as e:
+            print(e)
+
+
+def read_inputPersone_File(c_file):
     with open(c_file, "r") as ins:
         content = ins.read().splitlines()
         return content
@@ -19,26 +32,51 @@ def read_arenaFile(a_file):
         content = pickle.load(list_1_file)
     return content
 
-def create_personeFile(p_file, _numPersone, _num_exits, xMax, yMax):
-
-    persone_file = open(p_file, 'w+')
-    for p in range(0, _numPersone):
+def create_personeFile(p_file, _inputList, _num_exits, xMax, yMax):
+    print("_inputList %s \n" % _inputList)
+    num_totale = int(_inputList[0])
+    num_p_fast = num_totale * int(_inputList[1]) / 100
+    num_p_medium = num_totale * int(_inputList[2]) / 100
+    num_p_slow = num_totale * int(_inputList[3]) / 100
+    print("numTOT = %d, fast = %d, medium = %d, slow = %d \n " %(num_totale, num_p_fast, num_p_medium, num_p_slow))
+    persone_file = open(p_file, 'w')
+    for p in range(0, num_p_fast):
         # print_variable = []
         xCoord_p = random.randint(1, xMax-2)
         yCoord_p = random.randint(1, yMax-2)
-        vel_p = random.randint(1,3)
+        vel_p = 3
         target_exit = random.randint(1,_num_exits)
         isOut = 0
         # print_variable += xCoord_p, yCoord_p, vel_p
         persone_file.write(("%d %d %d %d %d\n" %(xCoord_p, yCoord_p, vel_p, target_exit, isOut)))
+    for pp in range(0, num_p_medium):
+        # print_variable = []
+        xCoord_p = random.randint(1, xMax-2)
+        yCoord_p = random.randint(1, yMax-2)
+        vel_p = 2
+        target_exit = random.randint(1,_num_exits)
+        isOut = 0
+        # print_variable += xCoord_p, yCoord_p, vel_p
+        persone_file.write(("%d %d %d %d %d\n" %(xCoord_p, yCoord_p, vel_p, target_exit, isOut)))
+
+    for pi in range(0, num_p_slow):
+        # print_variable = []
+        xCoord_p = random.randint(1, xMax-2)
+        yCoord_p = random.randint(1, yMax-2)
+        vel_p = 1
+        target_exit = random.randint(1,_num_exits)
+        isOut = 0
+        # print_variable += xCoord_p, yCoord_p, vel_p
+        persone_file.write(("%d %d %d %d %d\n" %(xCoord_p, yCoord_p, vel_p, target_exit, isOut)))
+
 
 def read_personeFile(c_file):
     with open(c_file, "r") as f:
         raw_persone = f.read().splitlines()
         n_lines_in_file = len(raw_persone)
         persone_def = [0 for x in range(n_lines_in_file)]
-        print("read_personeFile %d \n" %len(persone_def))
-        print n_lines_in_file
+        # print("read_personeFile %d \n" %len(persone_def))
+        # print n_lines_in_file
         for x in range(0, n_lines_in_file):
             persone_dict = raw_persone[x]
             p_x = persone_dict.split()[0]
@@ -52,7 +90,7 @@ def read_personeFile(c_file):
 
 def place_persone_in_arena(_arena_type, persone, xmax, ymax):
     n_p = len(persone)
-    print("place_persone_in_arena, n_p = %d \n" %n_p)
+    # print("place_persone_in_arena, n_p = %d \n" %n_p)
     for p in range(0,n_p):
         i = int(persone[p][0])
         j = int(persone[p][1])
@@ -78,7 +116,7 @@ def read_exitsFile(e_file):
 
 def add_target_exits_number(_arena_type, _exits, xmax, ymax):
     n_e = len(_exits)
-    print("add_target_exits_number, n_e = %d \n" % n_e)
+    # print("add_target_exits_number, n_e = %d \n" % n_e)
     num_exits = len(_exits)
 
     for nl in range(0, num_exits):
