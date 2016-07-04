@@ -6,7 +6,7 @@ LINE, RECTANGLE = list(range(2))
 arena_type = []
 xmax, ymax = 0,0
 g_exits_file = None
-DEBUG = True
+DEBUG = False
 
 class Arena:
     def __init__(self, canvas):
@@ -120,7 +120,8 @@ class Arena:
         for i in range(0, ncols):
             for j in range(0, nrows):
                 if(i == 0 or i == (ncols -1) or j == 0 or j == (nrows-1)):
-                    print('buildArenaLists/arena_type %d %d --- %d %d \n'%(i,j, nrows, ncols))
+                    if DEBUG:
+                        print('buildArenaLists/arena_type %d %d --- %d %d \n'%(i,j, nrows, ncols))
                     arena_type[i + j*ncols] = -1
         if DEBUG:
             print("in Arena class, len(arena_type) %s \n" %len(arena_type))
@@ -130,7 +131,8 @@ class Arena:
         self.arena_type = arena_type
         self.nrows_a = int(nrows)
         self.ncols_a = int(ncols)
-        print("nrows %d ncols %d \n" %(self.nrows_a, self.ncols_a))
+        if DEBUG:
+            print("nrows %d ncols %d \n" %(self.nrows_a, self.ncols_a))
 
     def select_tool(self, tool):
         if DEBUG:
@@ -140,50 +142,50 @@ class Arena:
     def addExitToArena(self):
         diffX = self.endLinex - self.initLinex
         diffY = self.endLiney - self.initLiney
-        print("addExitToArena %d %d \n" %(diffX, diffY))
-        southExit, northExit = False, False
-        eastExit, westExit = False, False
+        if DEBUG:
+            print("addExitToArena %d %d \n" %(diffX, diffY))
         global g_exits_file
         g_exits_file = open("exits.txt", "a")
         _exits_file = g_exits_file
         if diffX > diffY:
-            print("horizonthal side %d \n" % (self.initLiney - self.upperLefty))
+            if DEBUG:
+                print("horizonthal side %d \n" % (self.initLiney - self.upperLefty))
 
             exit_x_0 = self.initLinex - self.upperLeftx
             exit_x_1 = self.endLinex - self.upperLeftx
 
-            print("initX %d initY %d\n " %(self.initLinex, self.endLinex))
-            print("exit0 %d exit_1 %d\n " %(exit_x_0, exit_x_1))
+            if DEBUG:
+                print("initX %d initY %d\n " %(self.initLinex, self.endLinex))
+                print("exit0 %d exit_1 %d\n " %(exit_x_0, exit_x_1))
 
             if self.initLiney - self.upperLefty > (self.nrows_a/2):
-                print("south EXIT \n")
-                southExit = True
+                if DEBUG:
+                    print("south EXIT \n")
                 y_all = self.nrows_a
                 self.updateArenaList("S", exit_x_0, exit_x_1)
-                # _exits_file.write(("%s %d %d \n" % ("S", exit_0, exit_1)))
                 _exits_file.write(("%d %d %d %d \n" % (exit_x_0, y_all, exit_x_1, y_all)))
             else:
-                print("north EXIT \n")
-                northExit = True
+                if DEBUG:
+                    print("north EXIT \n")
                 y_all = 0
                 self.updateArenaList("N", exit_x_0, exit_x_1 )
-                #_exits_file.write(("%s %d %d \n" % ("N", exit_x_0, exit_x_1)))
                 _exits_file.write(("%d %d %d %d\n" % (exit_x_0, y_all, exit_x_1, y_all)))
         else:
-            print("vertical side  %d \n" % (self.initLinex - self.upperLeftx))
+            if DEBUG:
+                print("vertical side  %d \n" % (self.initLinex - self.upperLeftx))
 
             exit_y_0 = self.initLiney - self.upperLefty
             exit_y_1 = self.endLiney - self.upperLefty
 
             if self.initLinex - self.upperLeftx > (self.ncols_a / 2):
-                print("East EXIT \n")
-                eastExit = True
+                if DEBUG:
+                    print("East EXIT \n")
                 x_all = self.ncols_a
                 self.updateArenaList("E", exit_y_0, exit_y_1)
                 _exits_file.write(("%d %d %d %d \n" % (x_all, exit_y_0, x_all, exit_y_1)))
             else:
-                print("West EXIT \n")
-                westExit = True
+                if DEBUG:
+                    print("West EXIT \n")
                 x_all = 0
                 self.updateArenaList("W", exit_y_0, exit_y_1)
                 # _exits_file.write(("%s %d %d \n" % ("W", exit_0, exit_1)))
@@ -191,28 +193,35 @@ class Arena:
 
     def updateArenaList(self, position_flag, _exit_0, _exit_1):
         if(position_flag == "N"):
-            print("sono a nord %d %d \n" %(_exit_0, _exit_1))
+            if DEBUG:
+                print("sono a nord %d %d \n" %(_exit_0, _exit_1))
             for i in range(_exit_0, _exit_1 + 1):
                 self.arena_type[i] = self.exit_target_number
-            print(" exit_target_num %d \n" %self.exit_target_number)
+            if DEBUG:
+                print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number +=1
         elif(position_flag == "S"):
-            print("sono a sud %d %d \n" %(_exit_0, _exit_1))
+            if DEBUG:
+                print("sono a sud %d %d \n" %(_exit_0, _exit_1))
             for i in range(_exit_0, _exit_1 + 1):
                 self.arena_type[(self.nrows_a - 1) * self.ncols_a + i] = self.exit_target_number
-            print(" exit_target_num %d \n" %self.exit_target_number)
+            if DEBUG:
+                print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number +=1
         elif(position_flag == "E"):
-            print("sono a est %d %d \n" %(_exit_0, _exit_1))
+            if DEBUG:
+                print("sono a est %d %d \n" %(_exit_0, _exit_1))
             for j in range(_exit_0, _exit_1):
                 self.arena_type[(self.ncols_a ) * j + self.ncols_a -1] = self.exit_target_number
-                print("j %d arena %s index %d \n" %(j, self.arena_type[(self.ncols_a -1 ) * j + self.ncols_a], (self.ncols_a -1 ) * j + self.ncols_a))
-            print(" exit_target_num %d \n" %self.exit_target_number)
+                if DEBUG:
+                    print("j %d arena %s index %d \n" %(j, self.arena_type[(self.ncols_a -1 ) * j + self.ncols_a], (self.ncols_a -1 ) * j + self.ncols_a))
+                    print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number += 1
         elif(position_flag == "W"):
             for j in range(_exit_0, _exit_1 + 1):
                 self.arena_type[(self.ncols_a) * j] = self.exit_target_number
-            print(" exit_target_num %d \n" %self.exit_target_number)
+            if DEBUG:
+                print(" exit_target_num %d \n" %self.exit_target_number)
             self.exit_target_number += 1
         # print("arena_type %s \n" %self.arena_type)
 
@@ -314,25 +323,29 @@ class Tool:
                     print("2.e: L activaTED")
                 self._activeL = True
 
-root = Tk()
+def drawGUI():
+    root = Tk()
 
-canvas = Canvas(highlightbackground='black', height=500, width=700)
-whiteboard = Arena(canvas)
-tool = Tool(whiteboard)
-canvas.pack(fill='both', expand=True, padx=6, pady=6)
+    canvas = Canvas(highlightbackground='black', height=500, width=700)
+    whiteboard = Arena(canvas)
+    tool = Tool(whiteboard)
+    canvas.pack(fill='both', expand=True, padx=6, pady=6)
 
-g_exits_file = open("exits.txt", "w")
+    g_exits_file = open("exits.txt", "w")
 
-def save_and_quit():
-    # arena_file = open('arena.txt', 'w+')
-    with open('arena.txt', 'wb') as arena_file:
-        pickle.dump(arena_type, arena_file)
-    arena_dim = open('arena_dim.txt', 'w+')
-    arena_dim.write(("%d %d \n" %(xmax, ymax)))
-    # g_exits_file.flush()
-    # g_exits_file.close()
-    root.destroy()
+    def save_and_quit():
+        # arena_file = open('arena.txt', 'w+')
+        with open('arena.txt', 'wb') as arena_file:
+            pickle.dump(arena_type, arena_file)
+        arena_dim = open('arena_dim.txt', 'w+')
+        arena_dim.write(("%d %d \n" %(xmax, ymax)))
+        # g_exits_file.flush()
+        # g_exits_file.close()
+        root.destroy()
 
-root.protocol( "WM_DELETE_WINDOW", save_and_quit)
+    root.protocol( "WM_DELETE_WINDOW", save_and_quit)
 
-root.mainloop()
+    root.mainloop()
+
+if __name__ == '__main__':
+    drawGUI()

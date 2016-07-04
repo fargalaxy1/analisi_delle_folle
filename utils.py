@@ -1,16 +1,24 @@
-import sys
+import os
 import pickle
 import random
 
 def empty_output_directory():
-    import os, shutil
-    folder = '/Users/marta/PycharmProjects/analisi_delle_folle/output'
-    for the_file in os.listdir(folder):
-        file_path = os.path.join(folder, the_file)
+    import os
+    path = './output'
+    try:
+        print("1 \n")
+        os.makedirs(path)
+        print("2 \n")
+    except OSError:
+        print("3 \n")
+        if not os.path.isdir(path):
+            raise
+
+    for the_file in os.listdir(path):
+        file_path = os.path.join(path, the_file)
         try:
             if os.path.isfile(file_path):
                 os.unlink(file_path)
-            #elif os.path.isdir(file_path): shutil.rmtree(file_path)
         except Exception as e:
             print(e)
 
@@ -127,3 +135,6 @@ def add_target_exits_number(_arena_type, _exits, xmax, ymax):
 
     return _arena_type
 
+def mount_video():
+    commandString = "ffmpeg -f image2 -r 4 -i output/timestep_%01d.png -vcodec mpeg4 -y output/movie_script.mp4"
+    os.system(commandString)
