@@ -22,7 +22,6 @@ def empty_output_directory():
         except Exception as e:
             print(e)
 
-
 def read_inputPersone_File(c_file):
     with open(c_file, "r") as ins:
         content = ins.read().splitlines()
@@ -136,5 +135,10 @@ def add_target_exits_number(_arena_type, _exits, xmax, ymax):
     return _arena_type
 
 def mount_video():
-    commandString = "ffmpeg -f image2 -r 4 -i output/timestep_%01d.png -vcodec mpeg4 -y output/movie_script.mp4"
+    commandString = "ffmpeg -f image2 -r 4 -i output/timestep_%01d.png -vcodec mpeg4 -y output/simulazione.mp4"
     os.system(commandString)
+
+def save_percentage_to_file(_t50, _t90, _t100):
+    percentage_file = open('output_percentuali.txt', 'w')
+    percentage_file.write(("t50 t90 t100 \n" ))
+    percentage_file.write(("%d %d %d \n" % (_t50, _t90, _t100)))

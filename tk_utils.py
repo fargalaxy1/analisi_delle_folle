@@ -1,9 +1,9 @@
 from Tkinter import *
 import pickle
-from PIL  import Image, ImageDraw
+from PIL  import Image, ImageDraw, ImageFont
 
 DEBUG = False
-timestep = 0
+timestep = 1
 
 def initConfig_window():
     fields = 'Numero di persone', '% di uomini', '% di donne', '% di disabili'
@@ -148,9 +148,39 @@ def draw_arena(_persone, _exits,_xmax, _ymax):
                 draw.point((xp, yp), fill='green')
 
     global timestep
+
     image2 = image1.resize((canvas_width*3, canvas_height*3))
     filename = "output/timestep_" + str(timestep) +".png"
+
+    # space_bwn_lines = 30
+    # legenda_box_x = ((_xmax + traslate)/2)*3
+    # legenda_box_y = (_ymax + traslate)*3 + 10
+    space_bwn_lines = 30
+    legenda_box_x = (traslate)*3
+    legenda_box_y = (_ymax + traslate)*3 + 10
+
+    draw2 = ImageDraw.Draw(image2)
+    fontTitle = ImageFont.truetype("Arial.ttf", 24)
+    font = ImageFont.truetype("Arial.ttf", 22)
+
+    draw2.text((legenda_box_x, legenda_box_y ), "Legenda:", align = 'center', font = fontTitle, fill= 000)
+    draw2.text((legenda_box_x, legenda_box_y + space_bwn_lines), "* Uomini", align = 'center', font = font, fill= 'blue')
+    draw2.text((legenda_box_x, legenda_box_y + space_bwn_lines*2), "* Donne", align = 'center', font = font, fill= 'red')
+    draw2.text((legenda_box_x, legenda_box_y + space_bwn_lines*3), "* Disabili", align = 'center', font = font, fill= 'green')
     image2.save(filename, 'PNG')
+
     timestep+=1
     return _persone
     # mainloop()
+
+def popupmsg(_t50, _t90, _t100):
+    import Tkinter as tk
+    import tkMessageBox
+    root = tk.Tk()
+    root.withdraw()
+    print("popupmsg()function 1 \n")
+
+    message = "Il video della simulazione e' stato salvato in output/simulazione.mp4 \n" + "t50 = " + str(_t50) + "\n" + " t90 = " + str(_t90)  +  "\n" +" t100 = " + str(_t100)
+    tkMessageBox.showinfo("Simulazione completata", message)
+    return 0
+

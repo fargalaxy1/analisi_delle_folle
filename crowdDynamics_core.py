@@ -1,17 +1,17 @@
 from utils import read_inputPersone_File, read_arenaFile, read_arenaDimFile, create_personeFile, read_personeFile, \
-    place_persone_in_arena, read_exitsFile, empty_output_directory, mount_video
-from tk_utils import draw_arena_init, draw_arena, initConfig_window
+    place_persone_in_arena, read_exitsFile, empty_output_directory, mount_video, save_percentage_to_file
+from tk_utils import draw_arena_init, draw_arena, initConfig_window, popupmsg
 import math
+import easygui
 
 DEBUG = False
 
 def crowdDyn_main():
+    percentage_50 = False
+    percentage_90 = False
 
     empty_output_directory()
 
-    initConfig_window()
-    inputValues_persone = read_inputPersone_File("input_values.txt")
-    num_persone = int(inputValues_persone[0])
     # here I replace arena_type[] coming from the old manual method with the GUI one
     arena_type = read_arenaFile("arena.txt")
     xmax, ymax = read_arenaDimFile("arena_dim.txt")
@@ -19,14 +19,24 @@ def crowdDyn_main():
     # save exits in array
     exits = read_exitsFile("exits.txt")
     num_exits = len(exits)
-    if DEBUG:
-        print("exits %s %d \n" %(exits, num_exits))
 
     if DEBUG:
-        print("xmax = %d, ymax = %d \n" %(xmax,ymax))
+        print("exits %s %d \n" % (exits, num_exits))
 
-    # create and read persone file
-    create_personeFile("persone.txt", inputValues_persone, num_exits, xmax, ymax)
+    if DEBUG:
+        print("xmax = %d, ymax = %d \n" % (xmax, ymax))
+
+
+    if easygui.ynbox('Vuoi usare la distribuzione di persone precedente? ', 'Title', ('Si', 'No')):
+        inputValues_persone = read_inputPersone_File("input_values.txt")
+        num_persone = int(inputValues_persone[0])
+    else:
+        initConfig_window()
+        inputValues_persone = read_inputPersone_File("input_values.txt")
+        num_persone = int(inputValues_persone[0])
+        # create and read persone file
+        create_personeFile("persone.txt", inputValues_persone, num_exits, xmax, ymax)
+
     persone = read_personeFile("persone.txt")
 
     # if DEBUG:
@@ -50,7 +60,7 @@ def crowdDyn_main():
 
     # init evolution
     isallpeople_out = False
-    timestep = 0
+    timestep = 1
 
     while True:
 
@@ -79,16 +89,20 @@ def crowdDyn_main():
             print("percentage_of_evacuated %d \n" % percentage_of_evacuated)
         if percentage_of_evacuated == 100:
             t100 = timestep
-            if DEBUG:
-                print("t100 = %d \n" % t100)
+            print("t100 = %d \n" % t100)
+
         elif percentage_of_evacuated >= 90:
-            t90 = timestep
-            if DEBUG:
+            if not percentage_90:
+                t90 = timestep
                 print("t90 = %d \n" % t90)
+                percentage_90 = True
+                    # if DEBUG:
+            #     print("t90 = %d \n" % t90)
         elif percentage_of_evacuated >= 50:
-            t50 = timestep
-            if DEBUG:
+            if not percentage_50:
+                t50 = timestep
                 print("t50 = %d \n" % t50)
+                percentage_50 = True
 
         if DEBUG:
             print("percentage %.2f \n" % (100 * ev / num_persone))
@@ -288,7 +302,7 @@ def crowdDyn_main():
                 print("CONTINUE the while loop until all people has been moved \n")
                 print("CONTINUE: ev = %d, num_persone = %d \n" %(ev, num_persone))
             persone = draw_arena(persone, exits, xmax, ymax)
-            timestep += timestep
+            timestep += 1
             # print persone
             continue
 
@@ -300,5 +314,10 @@ def crowdDyn_main():
         print("sono appena uscita dal loop temporale \n")
 
     mount_video()
+
+    save_percentage_to_file(t50, t90, t100)
+
+    no = popupmsg(t50, t90, t100)
+
 if __name__ == '__main__':
     crowdDyn_main()
