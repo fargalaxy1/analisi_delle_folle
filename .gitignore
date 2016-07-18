@@ -6,4 +6,7 @@ out_log
 *.DS_Store
 *.pyc
 /output
+/tests
 *.mp4
+out.txt
+!drawArena_GUI_OLD.py

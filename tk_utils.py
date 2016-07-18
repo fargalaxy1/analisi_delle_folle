@@ -47,7 +47,6 @@ def draw_arena_init(_persone, _exits,_xmax, _ymax):
     print(" draw_arena_init(): _xmax/height = %d; _ymax/width = %d \n" % (_xmax, _ymax))
     canvas_width = _xmax + padding
     canvas_height = _ymax + padding
-    print(" canvas_width = %d; canvas_height = %d \n" % (canvas_width, canvas_height))
 
     w = Canvas(master,
                width=canvas_width,
@@ -94,7 +93,6 @@ def draw_arena(_persone, _exits,_xmax, _ymax):
     canvas_height = _ymax + padding
     if DEBUG:
         print(" canvas_width = %d; canvas_height = %d \n" %(canvas_width, canvas_height))
-
 
     # PIL create an empty image and draw object to draw on
     # memory only, not visible
@@ -182,5 +180,4 @@ def popupmsg(_t50, _t90, _t100):
 
     message = "Il video della simulazione e' stato salvato in output/simulazione.mp4 \n" + "t50 = " + str(_t50) + "\n" + " t90 = " + str(_t90)  +  "\n" +" t100 = " + str(_t100)
     tkMessageBox.showinfo("Simulazione completata", message)
-    return 0
 

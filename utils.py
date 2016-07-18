@@ -45,7 +45,7 @@ def create_personeFile(p_file, _inputList, _num_exits, xMax, yMax):
     num_p_fast = num_totale * int(_inputList[1]) / 100
     num_p_medium = num_totale * int(_inputList[2]) / 100
     num_p_slow = num_totale * int(_inputList[3]) / 100
-    print("numTOT = %d, fast = %d, medium = %d, slow = %d \n " %(num_totale, num_p_fast, num_p_medium, num_p_slow))
+    print("numTOT = %d, fast = %d, medium = %d, slow = %d \n " %(_num_exits, num_p_fast, num_p_medium, num_p_slow))
     persone_file = open(p_file, 'w')
     for p in range(0, num_p_fast):
         # print_variable = []
@@ -53,6 +53,8 @@ def create_personeFile(p_file, _inputList, _num_exits, xMax, yMax):
         yCoord_p = random.randint(1, yMax-2)
         vel_p = 3
         target_exit = random.randint(1,_num_exits)
+        # target_exit = random.randint(_num_exits+1, 2*_num_exits +1 )
+
         isOut = 0
         # print_variable += xCoord_p, yCoord_p, vel_p
         persone_file.write(("%d %d %d %d %d\n" %(xCoord_p, yCoord_p, vel_p, target_exit, isOut)))
@@ -107,6 +109,7 @@ def place_persone_in_arena(_arena_type, persone, xmax, ymax):
 def read_exitsFile(e_file):
     with open(e_file, "r") as f:
         raw_exits = f.read().splitlines()
+        print("raw_exits %s \n" %raw_exits)
         n_lines_in_file = len(raw_exits)
         exits_a = [0 for x in range(n_lines_in_file)]
         print n_lines_in_file
@@ -116,7 +119,7 @@ def read_exitsFile(e_file):
             y_0 = exits_dict.split()[1]
             x_1 = exits_dict.split()[2]
             y_1 = exits_dict.split()[3]
-            # print("loop exits_dict %s %s %s %s\n" %(x_0, y_0, x_1, y_1))
+            print("loop exits_dict %s %s %s %s\n" %(x_0, y_0, x_1, y_1))
             exits_a[l] = x_0, y_0, x_1, y_1
 
         return exits_a

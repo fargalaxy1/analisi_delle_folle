@@ -325,12 +325,12 @@ class Tool:
 
 def drawGUI():
     root = Tk()
-
+    root.attributes('-topmost', True)
     canvas = Canvas(highlightbackground='black', height=500, width=700)
     whiteboard = Arena(canvas)
     tool = Tool(whiteboard)
     canvas.pack(fill='both', expand=True, padx=6, pady=6)
-
+    global g_exits_file
     g_exits_file = open("exits.txt", "w")
 
     def save_and_quit():
@@ -340,7 +340,7 @@ def drawGUI():
         arena_dim = open('arena_dim.txt', 'w+')
         arena_dim.write(("%d %d \n" %(xmax, ymax)))
         # g_exits_file.flush()
-        # g_exits_file.close()
+        g_exits_file.close()
         root.destroy()
 
     root.protocol( "WM_DELETE_WINDOW", save_and_quit)

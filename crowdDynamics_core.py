@@ -19,7 +19,6 @@ def crowdDyn_main():
     # save exits in array
     exits = read_exitsFile("exits.txt")
     num_exits = len(exits)
-
     if DEBUG:
         print("exits %s %d \n" % (exits, num_exits))
 
@@ -35,6 +34,7 @@ def crowdDyn_main():
         inputValues_persone = read_inputPersone_File("input_values.txt")
         num_persone = int(inputValues_persone[0])
         # create and read persone file
+        print("%s %d %d %d \n" %(inputValues_persone, num_persone, num_exits, xmax))
         create_personeFile("persone.txt", inputValues_persone, num_exits, xmax, ymax)
 
     persone = read_personeFile("persone.txt")
@@ -153,6 +153,7 @@ def crowdDyn_main():
                 print("persone[%d] %s \n" % (active_p, persone[active_p]))
             # once the active persona is chosed, then move it as many times as its velocity
             while mosse < active_vel_p:
+
                 if DEBUG:
                     print("\n")
                     print("\n")
@@ -164,6 +165,7 @@ def crowdDyn_main():
                 active_p_y = persone[active_p][1]
                 if DEBUG:
                     print("---------------- init loop to move the active p --------------- \n")
+
                 candidate_x = -1
                 candidate_y = -1
                 min_distance = 100000
@@ -180,6 +182,7 @@ def crowdDyn_main():
                             print ("active_dx: %d xmax %d \n" % (active_dx, xmax))
                             print ("active_dy: %d ymax %d \n" % (active_dy, ymax))
 
+
                         # if the new position (x+dx, y+dy) is inside the arena then
                         if active_dx >= 0 and active_dx < xmax:
                             if active_dy >= 0 and active_dy < ymax:
@@ -193,6 +196,7 @@ def crowdDyn_main():
                                     if DEBUG:
                                         print("I'm sitting on a free cell, type %d\n" % arena_type[
                                             active_p_newx + xmax * active_p_newy])
+
                                     # loop on each cell of the arena to detect the closest exit from the active cell
                                     for i in range(0, xmax):
                                         for j in range(0, ymax):
@@ -202,6 +206,7 @@ def crowdDyn_main():
                                                 # if DEBUG:
                                                 #     print("USCITA SELEZIONATA %s (i,j) = (%d, %d) \n" % (
                                                 #     arena_type[i + xmax * j], i, j))
+
                                                 # compute the distance between the active cell (active_p_newx, active_p_newy) and the arena exit cell (i,j)
                                                 distance_activep_newcell = math.sqrt(
                                                     math.pow(j - active_p_newy, 2) + math.pow(i - active_p_newx, 2))
@@ -214,6 +219,7 @@ def crowdDyn_main():
                                                     min_distance = distance_activep_newcell
                                                     candidate_x = active_p_newx
                                                     candidate_y = active_p_newy
+
                                                     if DEBUG:
                                                         print("I found distance_activep_newcell %.2f and I'm %d \n" %(distance_activep_newcell, active_p))
                                                     if DEBUG:
@@ -228,6 +234,7 @@ def crowdDyn_main():
                     print("END OF MOVING, the closest position from exit found at %d %d \n "%(candidate_x,candidate_y))
                     print("\n")
                     print("\n")
+
                 # if the candidate new position is not outside the arena
                 if candidate_x != -1:
                     if DEBUG:
@@ -238,7 +245,6 @@ def crowdDyn_main():
                     if DEBUG:
                         print("old position %s %s %d \n " % (active_p_x, active_p_y, active_p))
                         print("Cell left %d \n " %arena_type[int(active_p_x) + xmax * int(active_p_y)])
-
                     # NB qui ho trasformato la tupla persone[] in una list per renderla modificabile
                     persone[ active_p ] = list(persone[ active_p ])
                     persone[ active_p ][0] = candidate_x
@@ -248,16 +254,17 @@ def crowdDyn_main():
                         print("\n")
                     # OCCHIO QUI
                     if arena_type[candidate_x + xmax * candidate_y] == active_target_exit_p:
-                        if candidate_x == 4:
-                            counter_horiz += 1
-                        elif candidate_x == 0:
-                           counter_vert += 1
+                        # if candidate_x == 4:
+                        #     counter_horiz += 1
+                        # elif candidate_x == 0:
+                        #    counter_vert += 1
                         if DEBUG:
                             print("La persona %d ha trovato l'uscita al tempo %d \n" %(active_p, timestep))
                             print("\n")
                             print("\n")
+
                         #  if the active person has found an exit, set the cell where it was residing to a blank space
-                        arena_type[candidate_x + xmax * candidate_y] = -2
+                        arena_type[candidate_x + xmax * candidate_y] = active_target_exit_p
                         persone[active_p][4] = 1
                         # print("La persona %d ha trovato l'uscita al tempo %d \n" %(active_p, timestep))
                         # print("Uscita al tempo %d %d \n" % (candidate_x, candidate_y))
@@ -270,6 +277,7 @@ def crowdDyn_main():
                             print("NOT AN EXIT: %s \n" %arena_type[candidate_x + xmax * candidate_y] )
                             print("\n")
                             print("\n")
+
                         #  if the new cell is not exit, then become occupied by the active_-> obstacle for the others
                         arena_type[ candidate_x + xmax * candidate_y] = -1
 
@@ -296,6 +304,8 @@ def crowdDyn_main():
             if DEBUG:
                 print("All people has been moved: evolved = %d, num_persone = %d \n" % (ev, num_persone))
                 print("EXIT NOW from while loop on all people")
+            # persone_final = draw_arena(persone, exits, xmax, ymax)
+
             break
         elif ev < num_persone:
             if DEBUG:
@@ -317,7 +327,13 @@ def crowdDyn_main():
 
     save_percentage_to_file(t50, t90, t100)
 
-    no = popupmsg(t50, t90, t100)
+    popupmsg(t50, t90, t100)
 
 if __name__ == '__main__':
-    crowdDyn_main()
+    import sys
+
+    try:
+        crowdDyn_main()
+    except:  # catch *all* exceptions
+        e = sys.exc_info()[0]
+        print(" EXCEPTION at crowdDyn_main():  <p>Error: %s</p>" %e)
