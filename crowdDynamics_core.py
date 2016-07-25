@@ -21,6 +21,7 @@ def crowdDyn_main():
     num_exits = len(exits)
     if DEBUG:
         print("exits %s %d \n" % (exits, num_exits))
+    print("exits %s %d \n" % (exits, num_exits))
 
     if DEBUG:
         print("xmax = %d, ymax = %d \n" % (xmax, ymax))
@@ -62,7 +63,9 @@ def crowdDyn_main():
     isallpeople_out = False
     timestep = 1
 
+    counter_TOT =0
     while True:
+        print("---------------- TIMESTEP %d ------------------ \n" %timestep)
 
         if DEBUG:
             print("\n")
@@ -113,6 +116,8 @@ def crowdDyn_main():
 
         # if not all actors have been processed then ..
         while (sum_p < num_persone):
+            # print("---------------- sum_p < num_persone ------------------ \n")
+
             if DEBUG:
                 print("\n")
                 print("\n")
@@ -153,6 +158,7 @@ def crowdDyn_main():
                 print("persone[%d] %s \n" % (active_p, persone[active_p]))
             # once the active persona is chosed, then move it as many times as its velocity
             while mosse < active_vel_p:
+                # print("---------------- while mosse ------------------ \n")
 
                 if DEBUG:
                     print("\n")
@@ -169,11 +175,16 @@ def crowdDyn_main():
                 candidate_x = -1
                 candidate_y = -1
                 min_distance = 100000
+                gradient_counter = 0
+
+                min_distance_array = [ 0 for x in range(8) ]
                 if DEBUG:
                     print("Coordinates of active p before moving %s %s \n"%(active_p_x, active_p_y))
                 # move active_p in the 8 cells surronding the one it sits on now
                 for dx in range(-1, 2):
                     for dy in range(-1, 2):
+
+                        print("---- 1 - min distance %.2f ----- \n"%min_distance)
                         active_dx = int(active_p_x) + dx
                         active_dy = int(active_p_y) + dy
                         if DEBUG:
@@ -181,7 +192,8 @@ def crowdDyn_main():
                             print ("active_dx: %d active_dy %d \n" % (active_dx, active_dy))
                             print ("active_dx: %d xmax %d \n" % (active_dx, xmax))
                             print ("active_dy: %d ymax %d \n" % (active_dy, ymax))
-
+                        print ("active_dx: %d active_dy %d \n" % (active_dx, active_dy))
+                        print ("dx: %d dy %d \n" % (dx, dy))
 
                         # if the new position (x+dx, y+dy) is inside the arena then
                         if active_dx >= 0 and active_dx < xmax:
@@ -196,47 +208,90 @@ def crowdDyn_main():
                                     if DEBUG:
                                         print("I'm sitting on a free cell, type %d\n" % arena_type[
                                             active_p_newx + xmax * active_p_newy])
-
                                     # loop on each cell of the arena to detect the closest exit from the active cell
                                     for i in range(0, xmax):
                                         for j in range(0, ymax):
                                             # print("distance loop (%d, %d) type %d\n" %(i,j, arena_type[ j + ymax * i ]))
                                             # if the arena cell (i,j) is an exit, then ..
-                                            if (arena_type[i + xmax * j]) == active_target_exit_p and (i != 0 or j != 0):
-                                                # if DEBUG:
-                                                #     print("USCITA SELEZIONATA %s (i,j) = (%d, %d) \n" % (
-                                                #     arena_type[i + xmax * j], i, j))
+
+                                            if (arena_type[i + xmax * j]) == active_target_exit_p:
+                                                goal_x = 0
+                                                goal_y = 0
+                                                if i == 0:
+                                                    # ovest
+                                                    for nn in range(0,num_exits):
+                                                        if exits[nn][0] == exits[nn][2]:
+                                                            goal_x = exits[nn][4]
+                                                            goal_y = exits[nn][5]
+                                                elif i == xmax-1:
+                                                    # east
+                                                    for nn in range(0, num_exits):
+                                                        if exits[nn][0] == exits[nn][2]:
+                                                            goal_x = exits[nn][4]
+                                                            goal_y = exits[nn][5]
+                                                elif j == 0:
+                                                    # north
+                                                    for nn in range(0, num_exits):
+                                                        if exits[nn][1] == exits[nn][3]:
+                                                            goal_x = exits[nn][4]
+                                                            goal_y = exits[nn][5]
+                                                elif j == ymax-1:
+                                                    # south
+                                                    for nn in range(0, num_exits):
+                                                        if exits[nn][1] == exits[nn][3]:
+                                                            goal_x = exits[nn][4]
+                                                            goal_y = exits[nn][5]
+
+                                                # print("counter_TOT = %d \n" %counter_TOT)
+                                                counter_TOT +=1
 
                                                 # compute the distance between the active cell (active_p_newx, active_p_newy) and the arena exit cell (i,j)
-                                                distance_activep_newcell = math.sqrt(
-                                                    math.pow(j - active_p_newy, 2) + math.pow(i - active_p_newx, 2))
+                                                distance_activep_newcell = float(math.sqrt(
+                                                    math.pow(int(goal_y) - active_p_newy, 2) + math.pow(int(goal_x) - active_p_newx, 2)))
+                                                # distance_activep_newcell_bis = float(math.sqrt(
+                                                #     math.pow(j - (active_p_newy + 0.5), 2) + math.pow(i - (active_p_newx + 0.5), 2)))
                                                 if DEBUG:
                                                     print(
                                                     "The distance from this exit is: %f \n" % distance_activep_newcell)
                                                 # if the distance between exit and test cell is smaller then the previous distance
                                                 # then set the active test cell has the candidate cell to move the persona
-                                                if float(distance_activep_newcell) < float(min_distance):
+                                                # print("distance_activep_newcell %.2f ----- \n" % distance_activep_newcell)
+                                                # print("distance_activep_newcell_bis %.2f ----- \n" % distance_activep_newcell_bis)
+
+                                                if float(min_distance) > float(distance_activep_newcell):
                                                     min_distance = distance_activep_newcell
+                                                    # print("3- min distance %.2f ----- \n" % min_distance)
+                                                    # print("dx, dy = (%d, %d) \n" % (dx, dy))
                                                     candidate_x = active_p_newx
                                                     candidate_y = active_p_newy
-
+                                                    print("I found distance_activep_newcell %.2f for cell (%d, %d)\n" % (distance_activep_newcell, i, j))
+                                                    print("candidate_x %d candidate_y %d\n" % (candidate_x, candidate_y))
+                                                    # print("old_x %d old_y %d\n" % (int(active_p_x), int(active_p_y)))
                                                     if DEBUG:
                                                         print("I found distance_activep_newcell %.2f and I'm %d \n" %(distance_activep_newcell, active_p))
                                                     if DEBUG:
-                                                        print(
+                                                         print(
                                                         "candidate_x %d candidate_y %d\n" % (candidate_x, candidate_y))
+                                                    print(" INNER -> min_distance_array[%d] = %s \n" %(gradient_counter,min_distance_array))
+
                                 elif arena_type[active_p_newx + xmax * active_p_newy] == -1:
+                                    print("I'm sitting on a BUSY cell, type %d\n" % arena_type[active_p_newx + xmax * active_p_newy])
+
                                     if DEBUG:
                                         print("I'm sitting on a BUSY cell, type %d\n" % arena_type[active_p_newx + xmax * active_p_newy])
+                        gradient_counter = gradient_counter + 1
+
+                #  qui mettere la scelta della direzione giusta
+                print("MIN DIST ARRAY = %s \n" %min_distance_array)
                 if DEBUG:
                     print("\n")
                     print("\n")
                     print("END OF MOVING, the closest position from exit found at %d %d \n "%(candidate_x,candidate_y))
                     print("\n")
                     print("\n")
-
+                print("FINE candidate_x %d candidate_y %d\n" % (candidate_x, candidate_y))
                 # if the candidate new position is not outside the arena
-                if candidate_x != -1:
+                if candidate_x != -1 and candidate_y != -1:
                     if DEBUG:
                         print("candidate_x is not an obstacle %d \n " %(candidate_x))
 
@@ -249,6 +304,7 @@ def crowdDyn_main():
                     persone[ active_p ] = list(persone[ active_p ])
                     persone[ active_p ][0] = candidate_x
                     persone[ active_p ][1] = candidate_y
+
                     if DEBUG:
                         print("\n")
                         print("\n")
@@ -264,7 +320,7 @@ def crowdDyn_main():
                             print("\n")
 
                         #  if the active person has found an exit, set the cell where it was residing to a blank space
-                        arena_type[candidate_x + xmax * candidate_y] = active_target_exit_p
+                        # arena_type[candidate_x + xmax * candidate_y] = active_target_exit_p
                         persone[active_p][4] = 1
                         # print("La persona %d ha trovato l'uscita al tempo %d \n" %(active_p, timestep))
                         # print("Uscita al tempo %d %d \n" % (candidate_x, candidate_y))
@@ -293,6 +349,8 @@ def crowdDyn_main():
                         print("processed[%d] = %d" %(active_p,processed[active_p]))
                         print("Mosse exausted %d, active_p %d at rest \n" % (mosse, active_p))
                     sum_p += 1
+            print("final counter_tot %d \n" %counter_TOT)
+            counter_TOT = 0
 
         if DEBUG:
             print("\n")

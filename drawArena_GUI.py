@@ -162,14 +162,18 @@ class Arena:
                 if DEBUG:
                     print("south EXIT \n")
                 y_all = self.nrows_a
+                goal_x = exit_x_0 + (exit_x_1 - exit_x_0)/2
+                goal_y = self.nrows_a + (self.nrows_a)/2
                 self.updateArenaList("S", exit_x_0, exit_x_1)
-                _exits_file.write(("%d %d %d %d \n" % (exit_x_0, y_all, exit_x_1, y_all)))
+                _exits_file.write(("%d %d %d %d %d %d\n" % (exit_x_0, y_all, exit_x_1, y_all, goal_x, goal_y)))
             else:
                 if DEBUG:
                     print("north EXIT \n")
                 y_all = 0
+                goal_x = exit_x_0 + (exit_x_1 - exit_x_0)/2
+                goal_y = -(self.nrows_a)/2
                 self.updateArenaList("N", exit_x_0, exit_x_1 )
-                _exits_file.write(("%d %d %d %d\n" % (exit_x_0, y_all, exit_x_1, y_all)))
+                _exits_file.write(("%d %d %d %d %d %d\n" % (exit_x_0, y_all, exit_x_1, y_all, goal_x, goal_y)))
         else:
             if DEBUG:
                 print("vertical side  %d \n" % (self.initLinex - self.upperLeftx))
@@ -180,16 +184,23 @@ class Arena:
             if self.initLinex - self.upperLeftx > (self.ncols_a / 2):
                 if DEBUG:
                     print("East EXIT \n")
+
                 x_all = self.ncols_a
+                goal_x = self.ncols_a + (self.ncols_a)/2
+                goal_y = exit_y_0 + (exit_y_1 - exit_y_0)/2
+
                 self.updateArenaList("E", exit_y_0, exit_y_1)
-                _exits_file.write(("%d %d %d %d \n" % (x_all, exit_y_0, x_all, exit_y_1)))
+                _exits_file.write(("%d %d %d %d %d %d\n" % (x_all, exit_y_0, x_all, exit_y_1, goal_x, goal_y)))
             else:
                 if DEBUG:
                     print("West EXIT \n")
                 x_all = 0
+                goal_x = -(self.ncols_a)/2
+                goal_y = exit_y_0 + (exit_y_1 - exit_y_0)/2
+
                 self.updateArenaList("W", exit_y_0, exit_y_1)
                 # _exits_file.write(("%s %d %d \n" % ("W", exit_0, exit_1)))
-                _exits_file.write(("%d %d %d %d \n" % (x_all, exit_y_0, x_all, exit_y_1)))
+                _exits_file.write(("%d %d %d %d %d %d\n" % (x_all, exit_y_0, x_all, exit_y_1, goal_x, goal_y)))
 
     def updateArenaList(self, position_flag, _exit_0, _exit_1):
         if(position_flag == "N"):

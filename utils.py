@@ -119,8 +119,11 @@ def read_exitsFile(e_file):
             y_0 = exits_dict.split()[1]
             x_1 = exits_dict.split()[2]
             y_1 = exits_dict.split()[3]
-            print("loop exits_dict %s %s %s %s\n" %(x_0, y_0, x_1, y_1))
-            exits_a[l] = x_0, y_0, x_1, y_1
+            g_x = exits_dict.split()[4]
+            g_y = exits_dict.split()[5]
+
+            print("loop exits_dict %s %s %s %s %s %s \n" %(x_0, y_0, x_1, y_1,g_x, g_y))
+            exits_a[l] = x_0, y_0, x_1, y_1, g_x, g_y
 
         return exits_a
 
